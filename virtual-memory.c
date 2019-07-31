@@ -185,7 +185,7 @@ uint8_t addressToPageNr(uint32_t address){
         if(address >= min && address < max)
             return i;
     }
-    printf("Address out of range");
+    printf("Address out of range\n");
     return 0;
 }
 
@@ -223,10 +223,7 @@ uint8_t getUnusedPage(){
         }
     }
     if(longest == 0 && !isPageInMemory(0))
-    {
-        printf("This should not have happened"); //TODO
-        fflush(stdout);
-    }
+        printf("This should not have happened\n"); //TODO
     return longest;
 }
 
@@ -299,7 +296,7 @@ int getIndexFromArray(char *array, int nr){
     for(int i=0; i<32; i++)
         if(nr < ((i + 1) * 8))
             return i;
-    printf("Number out of range");
+    printf("Number out of range\n");
     return 0;
 }
 
