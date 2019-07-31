@@ -44,7 +44,7 @@ int main(){
 
     pthread_join(thread2, NULL);
     printf("done\n");
-    
+
     return 0;
 
 }
@@ -93,9 +93,9 @@ void handlePageFault(uint8_t pagenr){
         writePageToDisk(unusedpage);
     }else{
         setIsPageInMemory(unusedpage, 0);
-        setMappedAddressInMemory(unusedpage, 255);       
+        setMappedAddressInMemory(unusedpage, 255);
     }
-    loadPageFromDisk(pagenr, realunused); 
+    loadPageFromDisk(pagenr, realunused);
 }
 
 char readFromMemory(uint32_t address){
@@ -106,10 +106,10 @@ char readFromMemory(uint32_t address){
         char *buffer = getAddressPage(page);
         char byte = buffer[offset];
         free(buffer);
-        return byte;       
+        return byte;
     }else{
         handlePageFault(page);
-        return readFromMemory(address);  
+        return readFromMemory(address);
     }
 }
 
@@ -119,10 +119,10 @@ void writeToMemory(uint32_t address, char byte){
         uint32_t offset = address - (4 * MB * page);
         uint32_t newaddr = getMappedAddressInMemory(page) * 4 * MB + offset;
         setLastUsed(page, timer);
-        buffer[newaddr] = byte;     
+        buffer[newaddr] = byte;
     }else{
         handlePageFault(page);
-        writeToMemory(address, byte);     
+        writeToMemory(address, byte);
     }
 }
 
@@ -161,7 +161,7 @@ void writeFileToDisk(char *name, uint32_t length, char *array){
 }
 
 //Memory needs to be free'd
-char *readFileFromDisk(char *name, uint32_t length){ 
+char *readFileFromDisk(char *name, uint32_t length){
     char *array;
     FILE *nfile = fopen(name, "rb");
     if(nfile == NULL){
@@ -183,7 +183,7 @@ uint8_t addressToPageNr(uint32_t address){
         uint32_t min = i * 4 * MB;
         uint32_t max = (i+1) * 4 * MB;
         if(address >= min && address < max)
-            return i;   
+            return i;
     }
 }
 
@@ -192,7 +192,7 @@ char *getAddressPage(uint8_t pagenr){
     uint8_t startaddr = getMappedAddressInMemory(pagenr);
     uint32_t min = startaddr * 4 * MB;
     uint32_t max = min + 4 * MB;
-    return sliceArray(buffer, 4 * MB, min, max);  
+    return sliceArray(buffer, 4 * MB, min, max);
 }
 
 uint8_t isPageEmpty(uint8_t pagenr){
@@ -216,7 +216,7 @@ uint8_t getUnusedPage(){
             uint16_t timediff = timer - getLastUsed(i);
             if(timediff > longesttime){
                 longesttime = timediff;
-                longest = i;                  
+                longest = i;
             }
         }
     }
@@ -261,7 +261,7 @@ void setMappedAddressInMemory(uint8_t pagenr, uint8_t address){
 void writeBytesToBuffer(char *array, uint32_t length, uint32_t address){
     for(int i=0; i<length; i++){
         buffer[address + i] = array[i];
-    }   
+    }
 }
 
 
