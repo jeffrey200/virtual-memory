@@ -185,6 +185,8 @@ uint8_t addressToPageNr(uint32_t address){
         if(address >= min && address < max)
             return i;
     }
+    printf("Address out of range");
+    return 0;
 }
 
 //Memory needs to be free'd
@@ -219,6 +221,11 @@ uint8_t getUnusedPage(){
                 longest = i;
             }
         }
+    }
+    if(longest == 0 && !isPageInMemory(0))
+    {
+        printf("This should not have happened"); //TODO
+        fflush(stdout);
     }
     return longest;
 }
@@ -292,6 +299,8 @@ int getIndexFromArray(char *array, int nr){
     for(int i=0; i<32; i++)
         if(nr < ((i + 1) * 8))
             return i;
+    printf("Number out of range");
+    return 0;
 }
 
 void setBit(char *array, int nr){
