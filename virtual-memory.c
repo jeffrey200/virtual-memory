@@ -10,16 +10,16 @@
 //Block Size: 4MB
 //Used Memory:
 //  isinmemory:     256 * 1bit => 32 bytes
-//  lastused:       256 * 2bytes
+//  lastused:       256 * 4bytes
 //  mappedaddress:  256 * 1byte
-//  padding:        256 * 1byte
-//  Total:          1056bytes
+//  padding:        256 * 3byte
+//  Total:          2080bytes
 
 #define MB  1024 * 1024
 #define RAM_SIZE    64 * MB
 
 
-volatile uint16_t timer = 0;
+volatile uint32_t timer = 0;
 
 char *buffer;
 
@@ -28,7 +28,7 @@ struct page *pages;
 
 struct page
 {
-    uint16_t lastused;
+    uint32_t lastused;
     uint8_t mappedaddress;
 };
 
@@ -68,8 +68,6 @@ void *setup(void *vargp){
     }
 
     printf("start test program\n");
-
-    sleep(1);
 
     writeToMemory(1024, 0x88);
     setLastUsed(0, 0);
@@ -211,11 +209,11 @@ uint8_t isPageEmpty(uint8_t pagenr){
 }
 
 uint8_t getUnusedPage(){
-    uint16_t longesttime = 0;
+    uint32_t longesttime = 0;
     uint8_t longest = 0;
     for(int i=0; i<256; i++){
         if(isPageInMemory(i)){
-            uint16_t timediff = timer - getLastUsed(i);
+            uint32_t timediff = timer - getLastUsed(i);
             if(timediff > longesttime){
                 longesttime = timediff;
                 longest = i;
@@ -246,11 +244,11 @@ uint8_t isAddressInMemory(uint32_t address){
     return isPageInMemory(addressToPageNr(address));
 }
 
-uint16_t getLastUsed(uint8_t pagenr){
+uint32_t getLastUsed(uint8_t pagenr){
     return pages[pagenr].lastused; 
 }
 
-void setLastUsed(uint8_t pagenr, uint16_t time){
+void setLastUsed(uint8_t pagenr, uint32_t time){
     pages[pagenr].lastused = time;
 }
 
@@ -274,7 +272,7 @@ void writeBytesToBuffer(char *array, uint32_t length, uint32_t address){
 
 void *incTimer(void *vargp){
     while(1){
-        sleep(1); //TODO: replace usleep
+        usleep(1000);
         timer++;
     }
     return NULL;
